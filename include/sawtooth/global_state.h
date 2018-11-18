@@ -65,6 +65,14 @@ class GlobalStateImpl: public GlobalState {
     // Delete multiple entries from global state.
     void DeleteState(const std::vector<std::string>& address) const;
 
+    // List all addresses with the given prefix if user is allowed to
+    void ListAddresses(std::vector<std::string>* out_values,
+    		const std::string& address) const;
+
+    // List all addresses with the given prefixes if user is allowed to
+    void ListAddresses(std::vector<std::string>* out_values,
+    		const std::vector<std::string>& address) const;
+
  private:
     std::string context_id;
     MessageStreamPtr message_stream;

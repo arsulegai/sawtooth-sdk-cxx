@@ -129,5 +129,47 @@ void GlobalStateImpl::DeleteState(const std::vector<std::string>& addresses) con
     future->GetMessage(Message::TP_STATE_DELETE_RESPONSE, &response);
 }
 
+void GlobalStateImpl::ListAddresses(
+		std::vector<std::string>* out_values,
+		const std::string& address) const {
+    std::vector<std::string> out;
+    std::vector<std::string> addresses = { address };
+
+    this->ListAddresses(&out, addresses);
+    out_values = &out;
+}
+
+void GlobalStateImpl::ListAddresses(
+        std::vector<std::string>* out_values,
+        const std::vector<std::string>& addresses) const {
+    if (!out_values) {
+        throw std::runtime_error("Expecting valid pointer passed to " \
+            "out_values");
+    }
+
+    TpStateAddressesListRequest request;
+    TpStateAddressesListResponse response;
+    request.set_context_id(this->context_id);
+    for (auto addr : addresses) {
+      request.add_addresses(addr);
+    }
+
+    FutureMessagePtr future = this->message_stream->SendMessage(
+        Message::TP_STATE_LIST_REQUEST, request);
+    future->GetMessage(Message::TP_STATE_LIST_RESPONSE, &response);
+
+    if(response.status() == TpStateAddressesListResponse::AUTHORIZATION_ERROR){
+        std::stringstream error;
+        error << "State Get Authorization error. Check transaction inputs.";
+        throw sawtooth::InvalidTransaction(error.str());
+    }
+
+    if ( response.addresses_size() > 0 ) {
+        for (const auto& address : response.addresses()) {
+            out_values->push_back(address);
+        }
+    }
+}
+
 }  // namespace sawtooth
 

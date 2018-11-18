@@ -119,6 +119,15 @@ class GlobalState {
 
     // Delete multiple entries from global state.
     virtual void DeleteState(const std::vector<std::string>& address) const = 0;
+
+    // List all addresses with the given prefix if user is allowed to
+    virtual void ListAddresses(std::vector<std::string>* out_values,
+    		const std::string& address) const = 0;
+
+    // List all addresses with the given prefixes if user is allowed to
+    virtual void ListAddresses(std::vector<std::string>* out_values,
+    		const std::vector<std::string>& address) const = 0;
+
 };
 typedef std::shared_ptr<GlobalState> GlobalStatePtr;
 typedef std::unique_ptr<GlobalState> GlobalStateUPtr;
