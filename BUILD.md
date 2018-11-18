@@ -168,6 +168,12 @@ To build the image:
     $ docker build . -t sawtooth-sdk-cxx-local
   ```
 
+If in proxy network, you may optionally pass --build-arg arguments
+
+  ```bash
+    $ docker build --build-arg http_proxy="http://proxy-server.example:3128" --build-arg https_proxy=http://proxy-server.example:3129 . -t sawtooth-sdk-cxx-local
+  ```
+
 To run the image and compile your local repository:
 
   ```bash
