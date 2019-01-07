@@ -17,10 +17,13 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <cstdint>
 
 #include "sawtooth_sdk.h"
 #include "sawtooth/transaction_handler.h"
 #include "sawtooth/message_dispatcher.h"
+
+const uint32_t SDK_PROTOCOL_VERSION = 1;
 
 namespace sawtooth {
 
@@ -35,6 +38,9 @@ class TransactionProcessorImpl: public TransactionProcessor {
     // Processor.  All the TransactionHandler objects must be registered
     // before run is called.
     void RegisterHandler(TransactionHandlerUPtr handler);
+
+    // Sets the TpProcessRequest header style, default set to EXPANDED
+    void SetHeaderStyle(TpRequestHeaderStyle style);
 
     // The main entry point for the TransactionProcessor. It will not return
     // until the TransactionProcessor shuts down.
@@ -53,6 +59,7 @@ class TransactionProcessorImpl: public TransactionProcessor {
     MessageStreamPtr response_stream;
 
     std::map<std::string, TransactionHandlerPtr> handlers;
+    TpRegisterRequest_TpProcessRequestHeaderStyle header_style;
 };
 
 }  // namespace sawtooth
