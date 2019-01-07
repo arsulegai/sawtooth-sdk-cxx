@@ -36,6 +36,9 @@ class TransactionProcessorImpl: public TransactionProcessor {
     // before run is called.
     void RegisterHandler(TransactionHandlerUPtr handler);
 
+    // Sets the TpProcessRequest header style, default set to EXPANDED
+    void SetHeaderStyle(TpRequestHeaderStyle style);
+
     // The main entry point for the TransactionProcessor. It will not return
     // until the TransactionProcessor shuts down.
     void Run();
@@ -53,6 +56,7 @@ class TransactionProcessorImpl: public TransactionProcessor {
     MessageStreamPtr response_stream;
 
     std::map<std::string, TransactionHandlerPtr> handlers;
+    TpRegisterRequest_TpProcessRequestHeaderStyle header_style;
 };
 
 }  // namespace sawtooth
