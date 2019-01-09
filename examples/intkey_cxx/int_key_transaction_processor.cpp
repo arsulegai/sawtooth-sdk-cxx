@@ -71,6 +71,7 @@ class IntKeyApplicator:  public sawtooth::TransactionApplicator {
 
 
     void CborToParams(std::string& verb, std::string& name, uint32_t& value) {
+    	LOG4CXX_ERROR(logger, "After receiving in TP " << this->txn->raw_header());
         const std::string& raw_data = this->txn->payload();
         std::vector<uint8_t> data_vector = ToVector(raw_data);
         json intkey_cmd = json::from_cbor(data_vector);
@@ -451,6 +452,7 @@ int main(int argc, char** argv) {
 
         processor->RegisterHandler(
             std::move(transaction_handler));
+        processor->SetHeaderStyle(sawtooth::TpRequestHeaderStyle::HeaderStyleRaw);
 
         LOG4CXX_DEBUG(logger, "\nRun");
 
