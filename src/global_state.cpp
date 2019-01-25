@@ -136,7 +136,7 @@ void GlobalStateImpl::ListAddresses(
     std::vector<std::string> addresses = { address };
 
     this->ListAddresses(&out, addresses);
-    out_values = &out;
+    *out_values = out;
 }
 
 void GlobalStateImpl::ListAddresses(
@@ -164,10 +164,8 @@ void GlobalStateImpl::ListAddresses(
         throw sawtooth::InvalidTransaction(error.str());
     }
 
-    if ( response.addresses_size() > 0 ) {
-        for (const auto& address : response.addresses()) {
-            out_values->push_back(address);
-        }
+    for (const auto& address : response.addresses()) {
+        out_values->push_back(address);
     }
 }
 
