@@ -156,9 +156,15 @@ void TransactionProcessorImpl::HandleProcessingRequest(const void* msg,
     TpProcessRequest request;
     TpProcessResponse response;
     try {
+    	::TransactionHeader* txn_header;
         request.ParseFromArray(msg, msg_size);
-
-        ::TransactionHeader* txn_header(request.release_header());
+        if (request.header_bytes().empty()) {
+            txn_header = request.release_header();
+        } else {
+        	TransactionHeader header;
+            header.ParseFromString(request.header_bytes());
+            txn_header = &header;
+        }
         const std::string& family = txn_header->family_name();
         TransactionHeaderPtr txnHeaderPtr(new TransactionHeaderImpl(txn_header));
 
