@@ -107,6 +107,7 @@ void TransactionProcessorImpl::Register() {
                 request.add_namespaces(namesp);
             }
             request.set_request_header_style(this->header_style);
+            request.set_protocol_version(SDK_PROTOCOL_VERSION);
             FutureMessagePtr future = this->response_stream->SendMessage(
                     Message_MessageType_TP_REGISTER_REQUEST, request);
             TpRegisterResponse response;
@@ -118,7 +119,8 @@ void TransactionProcessorImpl::Register() {
                     << response.status());
                 throw std::runtime_error("Registation failed");
             }
-            if (response.protocol_version() != SDK_PROTOCOL_VERSION) {
+            // Validator doesn't support all features requested by the SDK
+            if (response.protocol_version() < SDK_PROTOCOL_VERSION) {
                 LOG4CXX_ERROR(
                     logger,
                     "Validator version does not have capability to serve "
