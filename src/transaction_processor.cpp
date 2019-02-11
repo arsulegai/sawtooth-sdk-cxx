@@ -156,12 +156,12 @@ void TransactionProcessorImpl::HandleProcessingRequest(const void* msg,
     TpProcessRequest request;
     TpProcessResponse response;
     try {
-    	::TransactionHeader* txn_header;
+        ::TransactionHeader* txn_header(null);
         request.ParseFromArray(msg, msg_size);
         if (request.header_bytes().empty()) {
             txn_header = request.release_header();
         } else {
-        	TransactionHeader header;
+            ::TransactionHeader header;
             header.ParseFromString(request.header_bytes());
             txn_header = &header;
         }
@@ -209,6 +209,8 @@ void TransactionProcessorImpl::HandleProcessingRequest(const void* msg,
                 throw;
             }
         } else {
+            LOG4CXX_ERROR(logger, "No handlers registered for "
+                    << family);
             response.set_status(TpProcessResponse::INVALID_TRANSACTION);
         }
     } catch (std::exception& e ) {
